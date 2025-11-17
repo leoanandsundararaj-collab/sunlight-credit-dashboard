@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sunlight Financial - Credit Risk Intelligence Platform</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+  /* Primitive Color Tokens */
+  --color-white: rgba(255, 255, 255, 1);
+  --color-black: rgba(0, 0, 0, 1);
+  --color-cream-50: rgba(252, 252, 249, 1);
+  --color-cream-100: rgba(255, 255, 253, 1);
+  --color-gray-200: rgba(245, 245, 245, 1);
+  --color-gray-300: rgba(167, 169, 169, 1);
+  --color-gray-400: rgba(119, 124, 124, 1);
+  --color-slate-500: rgba(98, 108, 113, 1);
+  --color-brown-600: rgba(94, 82, 64, 1);
+  --color-charcoal-700: rgba(31, 33, 33, 1);
+  --color-charcoal-800: rgba(38, 40, 40, 1);
+  --color-slate-900: rgba(19, 52, 59, 1);
+  --color-teal-300: rgba(50, 184, 198, 1);
+  --color-teal-400: rgba(45, 166, 178, 1);
+  --color-teal-500: rgba(33, 128, 141, 1);
+  --color-teal-600: rgba(29, 116, 128, 1);
+  --color-teal-700: rgba(26, 104, 115, 1);
+  --color-teal-800: rgba(41, 150, 161, 1);
+  --color-red-400: rgba(255, 84, 89, 1);
+  --color-red-500: rgba(192, 21, 47, 1);
+  --color-orange-400: rgba(230, 129, 97, 1);
+  --color-orange-500: rgba(168, 75, 47, 1);
+
+  --color-brown-600-rgb: 94, 82, 64;
+  --color-teal-500-rgb: 33, 128, 141;
+  --color-slate-900-rgb: 19, 52, 59;
+  --color-slate-500-rgb: 98, 108, 113;
+  --color-red-500-rgb: 192, 21, 47;
+  --color-red-400-rgb: 255, 84, 89;
+  --color-orange-500-rgb: 168, 75, 47;
+  --color-orange-400-rgb: 230, 129, 97;
+
+  --color-bg-1: rgba(59, 130, 246, 0.08);
+  --color-bg-2: rgba(245, 158, 11, 0.08);
+  --color-bg-3: rgba(34, 197, 94, 0.08);
+  --color-bg-4: rgba(239, 68, 68, 0.08);
+  --color-bg-5: rgba(147, 51, 234, 0.08);
+  --color-bg-6: rgba(249, 115, 22, 0.08);
+  --color-bg-7: rgba(236, 72, 153, 0.08);
+  --color-bg-8: rgba(6, 182, 212, 0.08);
+
+  --color-background: var(--color-cream-50);
+  --color-surface: var(--color-cream-100);
+  --color-text: var(--color-slate-900);
+  --color-text-secondary: var(--color-slate-500);
+  --color-primary: var(--color-teal-500);
+  --color-primary-hover: var(--color-teal-600);
+  --color-primary-active: var(--color-teal-700);
+  --color-secondary: rgba(var(--color-brown-600-rgb), 0.12);
+  --color-secondary-hover: rgba(var(--color-brown-600-rgb), 0.2);
+  --color-secondary-active: rgba(var(--color-brown-600-rgb), 0.25);
+  --color-border: rgba(var(--color-brown-600-rgb), 0.2);
+  --color-btn-primary-text: var(--color-cream-50);
+  --color-card-border: rgba(var(--color-brown-600-rgb), 0.12);
+  --color-card-border-inner: rgba(var(--color-brown-600-rgb), 0.12);
+  --color-error: var(--color-red-500);
+  --color-success: var(--color-teal-500);
+  --color-warning: var(--color-orange-500);
+  --color-info: var(--color-slate-500);
+  --color-focus-ring: rgba(var(--color-teal-500-rgb), 0.4);
+  --color-select-caret: rgba(var(--color-slate-900-rgb), 0.8);
+
+  --focus-ring: 0 0 0 3px var(--color-focus-ring);
+  --focus-outline: 2px solid var(--color-primary);
+  --status-bg-opacity: 0.15;
+  --status-border-opacity: 0.25;
+
+  --color-success-rgb: 33, 128, 141;
+  --color-error-rgb: 192, 21, 47;
+  --color-warning-rgb: 168, 75, 47;
+  --color-info-rgb: 98, 108, 113;
+
+  --font-family-base: "FKGroteskNeue", "Geist", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-family-mono: "Berkeley Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-size-xs: 11px;
+  --font-size-sm: 12px;
+  --font-size-base: 14px;
+  --font-size-md: 14px;
+  --font-size-lg: 16px;
+  --font-size-xl: 18px;
+  --font-size-2xl: 20px;
+  --font-size-3xl: 24px;
+  --font-size-4xl: 30px;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 550;
+  --font-weight-bold: 600;
+  --line-height-tight: 1.2;
+  --line-height-normal: 1.5;
+  --letter-spacing-tight: -0.01em;
+
+  --space-0: 0;
+  --space-1: 1px;
+  --space-2: 2px;
+  --space-4: 4px;
+  --space-6: 6px;
+  --space-8: 8px;
+  --space-10: 10px;
+  --space-12: 12px;
+  --space-16: 16px;
+  --space-20: 20px;
+  --space-24: 24px;
+  --space-32: 32px;
+
+  --radius-sm: 6px;
+  --radius-base: 8px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-full: 9999px;
+
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.02);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.04), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+  --shadow-inset-sm: inset 0 1px 0 rgba(255, 255, 255, 0.15), inset 0 -1px 0 rgba(0, 0, 0, 0.03);
+
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --ease-standard: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --container-sm: 640px;
+  --container-md: 768px;
+  --container-lg: 1024px;
+  --container-xl: 1280px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-gray-400-rgb: 119, 124, 124;
+    --color-teal-300-rgb: 50, 184, 198;
+    --color-gray-300-rgb: 167, 169, 169;
+    --color-gray-200-rgb: 245, 245, 245;
+
+    --color-bg-1: rgba(29, 78, 216, 0.15);
+    --color-bg-2: rgba(180, 83, 9, 0.15);
+    --color-bg-3: rgba(21, 128, 61, 0.15);
+    --color-bg-4: rgba(185, 28, 28, 0.15);
+    --color-bg-5: rgba(107, 33, 168, 0.15);
+    --color-bg-6: rgba(194, 65, 12, 0.15);
+    --color-bg-7: rgba(190, 24, 93, 0.15);
+    --color-bg-8: rgba(8, 145, 178, 0.15);
+
+    --color-background: var(--color-charcoal-700);
+    --color-surface: var(--color-charcoal-800);
+    --color-text: var(--color-gray-200);
+    --color-text-secondary: rgba(var(--color-gray-300-rgb), 0.7);
+    --color-primary: var(--color-teal-300);
+    --color-primary-hover: var(--color-teal-400);
+    --color-primary-active: var(--color-teal-800);
+    --color-secondary: rgba(var(--color-gray-400-rgb), 0.15);
+    --color-secondary-hover: rgba(var(--color-gray-400-rgb), 0.25);
+    --color-secondary-active: rgba(var(--color-gray-400-rgb), 0.3);
+    --color-border: rgba(var(--color-gray-400-rgb), 0.3);
+    --color-error: var(--color-red-400);
+    --color-success: var(--color-teal-300);
+    --color-warning: var(--color-orange-400);
+    --color-info: var(--color-gray-300);
+    --color-focus-ring: rgba(var(--color-teal-300-rgb), 0.4);
+    --color-btn-primary-text: var(--color-slate-900);
+    --color-card-border: rgba(var(--color-gray-400-rgb), 0.2);
+    --color-card-border-inner: rgba(var(--color-gray-400-rgb), 0.15);
+    --shadow-inset-sm: inset 0 1px 0 rgba(255, 255, 255, 0.1), inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+    --color-select-caret: rgba(var(--color-gray-200-rgb), 0.8);
+
+    --color-success-rgb: var(--color-teal-300-rgb);
+    --color-error-rgb: var(--color-red-400-rgb);
+    --color-warning-rgb: var(--color-orange-400-rgb);
+    --color-info-rgb: var(--color-gray-300-rgb);
+  }
+}
+
+@font-face {
+  font-family: 'FKGroteskNeue';
+  src: url('https://r2cdn.perplexity.ai/fonts/FKGroteskNeue.woff2') format('woff2');
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-family-base);
+  background-color: var(--color-background);
+  color: var(--color-text);
+  line-height: var(--line-height-normal);
+  font-size: var(--font-size-base);
+}
+
+/* Custom Dashboard Styles */
+.dashboard {
+  min-height: 100vh;
+}
+
+.header {
+  background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+  color: white;
+  padding: var(--space-24) var(--space-32);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.header-content {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.header-title {
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
+  margin-bottom: var(--space-4);
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+.header-subtitle {
+  font-size: var(--font-size-base);
+  opacity: 0.9;
+  margin-bottom: var(--space-4);
+}
+
+.header-time {
+  font-size: var(--font-size-sm);
+  opacity: 0.8;
+}
+
+.nav-tabs {
+  display: flex;
+  gap: var(--space-4);
+  margin-top: var(--space-20);
+  border-bottom: 2px solid rgba(255,255,255,0.2);
+}
+
+.nav-tab {
+  padding: var(--space-12) var(--space-20);
+  background: transparent;
+  border: none;
+  color: rgba(255,255,255,0.8);
+  cursor: pointer;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  border-bottom: 3px solid transparent;
+  transition: all var(--duration-normal) var(--ease-standard);
+  position: relative;
+  top: 2px;
+}
+
+.nav-tab:hover {
+  color: white;
+  background: rgba(255,255,255,0.1);
+}
+
+.nav-tab.active {
+  color: white;
+  border-bottom-color: #f59e0b;
+  background: rgba(255,255,255,0.15);
+}
+
+.main-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: var(--space-32);
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--space-20);
+  margin-bottom: var(--space-32);
+}
+
+.kpi-card {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: var(--space-24);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-card-border);
+  transition: transform var(--duration-normal) var(--ease-standard), box-shadow var(--duration-normal) var(--ease-standard);
+}
+
+.kpi-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.kpi-label {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-medium);
+  margin-bottom: var(--space-8);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.kpi-value {
+  font-size: var(--font-size-4xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text);
+  margin-bottom: var(--space-4);
+}
+
+.kpi-trend {
+  font-size: var(--font-size-sm);
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.kpi-trend.positive {
+  color: var(--color-success);
+}
+
+.kpi-trend.negative {
+  color: var(--color-error);
+}
+
+.kpi-card.success .kpi-value {
+  color: var(--color-success);
+}
+
+.kpi-card.warning .kpi-value {
+  color: var(--color-warning);
+}
+
+.kpi-card.danger .kpi-value {
+  color: var(--color-error);
+}
+
+.chart-container {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: var(--space-24);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-card-border);
+  margin-bottom: var(--space-24);
+}
+
+.chart-title {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: var(--space-20);
+  color: var(--color-text);
+}
+
+.chart-wrapper {
+  height: 300px;
+  position: relative;
+}
+
+.table-container {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: var(--space-24);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-card-border);
+  overflow-x: auto;
+}
+
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-20);
+}
+
+.table-title {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+}
+
+.table-filters {
+  display: flex;
+  gap: var(--space-12);
+  align-items: center;
+}
+
+.filter-select {
+  padding: var(--space-8) var(--space-12);
+  border-radius: var(--radius-base);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead {
+  background: var(--color-bg-1);
+}
+
+th {
+  text-align: left;
+  padding: var(--space-12);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+  cursor: pointer;
+  user-select: none;
+  border-bottom: 2px solid var(--color-border);
+}
+
+th:hover {
+  background: var(--color-bg-2);
+}
+
+td {
+  padding: var(--space-12);
+  font-size: var(--font-size-base);
+  color: var(--color-text);
+  border-bottom: 1px solid var(--color-card-border);
+}
+
+tbody tr {
+  transition: background-color var(--duration-fast) var(--ease-standard);
+}
+
+tbody tr:hover {
+  background: var(--color-bg-1);
+}
+
+tbody tr.high-risk {
+  background: rgba(var(--color-error-rgb), 0.05);
+  border-left: 4px solid var(--color-error);
+}
+
+tbody tr.high-severity {
+  background: rgba(var(--color-error-rgb), 0.05);
+  border-left: 4px solid var(--color-error);
+}
+
+tbody tr.medium-severity {
+  background: rgba(var(--color-warning-rgb), 0.05);
+  border-left: 4px solid var(--color-warning);
+}
+
+.badge {
+  display: inline-block;
+  padding: var(--space-4) var(--space-10);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.badge.success {
+  background: rgba(var(--color-success-rgb), 0.15);
+  color: var(--color-success);
+  border: 1px solid rgba(var(--color-success-rgb), 0.3);
+}
+
+.badge.warning {
+  background: rgba(var(--color-warning-rgb), 0.15);
+  color: var(--color-warning);
+  border: 1px solid rgba(var(--color-warning-rgb), 0.3);
+}
+
+.badge.danger {
+  background: rgba(var(--color-error-rgb), 0.15);
+  color: var(--color-error);
+  border: 1px solid rgba(var(--color-error-rgb), 0.3);
+}
+
+.badge.info {
+  background: rgba(var(--color-info-rgb), 0.15);
+  color: var(--color-info);
+  border: 1px solid rgba(var(--color-info-rgb), 0.3);
+}
+
+.chat-container {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-card-border);
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.chat-header {
+  padding: var(--space-24);
+  border-bottom: 1px solid var(--color-card-border);
+}
+
+.chat-title {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text);
+  margin-bottom: var(--space-4);
+}
+
+.chat-subtitle {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+}
+
+.chat-messages {
+  padding: var(--space-24);
+  min-height: 400px;
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.message {
+  margin-bottom: var(--space-20);
+  padding: var(--space-16);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-1);
+}
+
+.message-header {
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: var(--space-8);
+  color: var(--color-primary);
+}
+
+.message-content {
+  line-height: 1.6;
+  white-space: pre-line;
+}
+
+.message-table {
+  margin-top: var(--space-12);
+  background: var(--color-surface);
+  border-radius: var(--radius-base);
+  padding: var(--space-12);
+  border: 1px solid var(--color-border);
+}
+
+.sample-questions {
+  padding: var(--space-24);
+  border-bottom: 1px solid var(--color-card-border);
+}
+
+.sample-questions-title {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: var(--space-12);
+  color: var(--color-text-secondary);
+}
+
+.questions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-12);
+}
+
+.question-btn {
+  padding: var(--space-12) var(--space-16);
+  background: var(--color-bg-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-base);
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  color: var(--color-text);
+  text-align: left;
+  transition: all var(--duration-normal) var(--ease-standard);
+}
+
+.question-btn:hover {
+  background: var(--color-primary);
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.chat-input {
+  padding: var(--space-24);
+  display: flex;
+  gap: var(--space-12);
+}
+
+.chat-input input {
+  flex: 1;
+  padding: var(--space-12);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-base);
+  font-size: var(--font-size-base);
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+.chat-input button {
+  padding: var(--space-12) var(--space-24);
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius-base);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: background var(--duration-normal) var(--ease-standard);
+}
+
+.chat-input button:hover {
+  background: var(--color-primary-hover);
+}
+
+.section-header {
+  margin-bottom: var(--space-24);
+}
+
+.section-title {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text);
+  margin-bottom: var(--space-8);
+}
+
+.section-subtitle {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+}
+
+.charts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+  gap: var(--space-24);
+  margin-bottom: var(--space-24);
+}
+
+@media (max-width: 768px) {
+  .charts-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .nav-tabs {
+    overflow-x: auto;
+  }
+  
+  .kpi-grid {
+    grid-template-columns: 1fr;
+  }
+}
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <header class="header">
+            <div class="header-content">
+                <h1 class="header-title">Sunlight Financial - Credit Risk Intelligence Platform</h1>
+                <div class="header-subtitle">Powered by Altair Graph Studio &amp; AI CoPilot</div>
+                <div class="header-time" id="currentDateTime"></div>
+                
+                <nav class="nav-tabs">
+                    <button class="nav-tab active" onclick="switchTab('portfolio')">Portfolio Overview</button>
+                    <button class="nav-tab" onclick="switchTab('contractor')">Contractor Risk</button>
+                    <button class="nav-tab" onclick="switchTab('warnings')">Early Warning Signals</button>
+                    <button class="nav-tab" onclick="switchTab('geographic')">Geographic Risk</button>
+                    <button class="nav-tab" onclick="switchTab('copilot')">AI CoPilot</button>
+                </nav>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <!-- Portfolio Overview Tab -->
+            <div id="portfolio" class="tab-content active">
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-label">Total Portfolio Value</div>
+                        <div class="kpi-value">$52.6M</div>
+                        <div class="kpi-trend positive">↑ 12.4% YTD</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-label">Active Loans</div>
+                        <div class="kpi-value">1,209</div>
+                        <div class="kpi-trend positive">↑ 8.2% vs last month</div>
+                    </div>
+                    <div class="kpi-card success">
+                        <div class="kpi-label">Delinquency Rate</div>
+                        <div class="kpi-value">3.87%</div>
+                        <div class="kpi-trend positive">↓ 0.3% vs last month</div>
+                    </div>
+                    <div class="kpi-card warning">
+                        <div class="kpi-label">Average Risk Score</div>
+                        <div class="kpi-value">58.8</div>
+                        <div class="kpi-trend">Monitor closely</div>
+                    </div>
+                </div>
+
+                <div class="charts-grid">
+                    <div class="chart-container">
+                        <h3 class="chart-title">Portfolio Risk Trend (Last 180 Days)</h3>
+                        <div class="chart-wrapper">
+                            <canvas id="riskTrendChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <h3 class="chart-title">Portfolio Distribution by State</h3>
+                        <div class="chart-wrapper">
+                            <canvas id="stateDistChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3 class="table-title">Recent High-Risk Loans</h3>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Borrower ID</th>
+                                <th>Contractor</th>
+                                <th>Risk Score</th>
+                                <th>Payment Status</th>
+                                <th>State</th>
+                                <th>Days Since Origination</th>
+                            </tr>
+                        </thead>
+                        <tbody id="highRiskLoansTable"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Contractor Risk Tab -->
+            <div id="contractor" class="tab-content">
+                <div class="section-header">
+                    <h2 class="section-title">Contractor Risk Intelligence Network</h2>
+                    <p class="section-subtitle">Knowledge graph analysis reveals contractor-level risk patterns</p>
+                </div>
+
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-label">Total Contractors</div>
+                        <div class="kpi-value">10</div>
+                    </div>
+                    <div class="kpi-card danger">
+                        <div class="kpi-label">High-Risk Contractors</div>
+                        <div class="kpi-value">2</div>
+                        <div class="kpi-trend">Default Rate &gt; 7%</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-label">Total Contractor Exposure</div>
+                        <div class="kpi-value">$4.5M</div>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3 class="table-title">Contractor Performance Analysis</h3>
+                        <div class="table-filters">
+                            <select class="filter-select" id="contractorFilter" onchange="filterContractors()">
+                                <option value="all">All Contractors</option>
+                                <option value="high">High Risk</option>
+                                <option value="medium">Medium Risk</option>
+                                <option value="low">Low Risk</option>
+                            </select>
+                        </div>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th onclick="sortContractors('name')">Contractor Name</th>
+                                <th onclick="sortContractors('loans')">Total Loans</th>
+                                <th onclick="sortContractors('volume')">Total Volume</th>
+                                <th onclick="sortContractors('risk')">Avg Risk Score</th>
+                                <th onclick="sortContractors('default')">Default Rate</th>
+                                <th>Risk Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="contractorTable"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Early Warning Signals Tab -->
+            <div id="warnings" class="tab-content">
+                <div class="section-header">
+                    <h2 class="section-title">AI-Powered Early Warning Detection System</h2>
+                    <p class="section-subtitle">Identifying risks before they become losses</p>
+                </div>
+
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-label">Total Active Warnings</div>
+                        <div class="kpi-value">10</div>
+                    </div>
+                    <div class="kpi-card danger">
+                        <div class="kpi-label">High Severity Alerts</div>
+                        <div class="kpi-value">5</div>
+                    </div>
+                    <div class="kpi-card warning">
+                        <div class="kpi-label">Medium Severity Alerts</div>
+                        <div class="kpi-value">5</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-label">Potential Loss Exposure</div>
+                        <div class="kpi-value">$287K</div>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3 class="table-title">Active Warning Alerts</h3>
+                        <div class="table-filters">
+                            <select class="filter-select" id="severityFilter" onchange="filterWarnings()">
+                                <option value="all">All Severity</option>
+                                <option value="high">High Only</option>
+                                <option value="medium">Medium Only</option>
+                            </select>
+                        </div>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Borrower ID</th>
+                                <th>Contractor</th>
+                                <th>Warning Type</th>
+                                <th>Severity</th>
+                                <th>Risk Score</th>
+                                <th>Days Since Origination</th>
+                                <th>Recommended Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="warningsTable"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Geographic Risk Tab -->
+            <div id="geographic" class="tab-content">
+                <div class="section-header">
+                    <h2 class="section-title">Geographic Risk Heatmap</h2>
+                    <p class="section-subtitle">Regional risk concentration analysis</p>
+                </div>
+
+                <div class="kpi-grid">
+                    <div class="kpi-card danger">
+                        <div class="kpi-label">Highest Risk State</div>
+                        <div class="kpi-value">CA</div>
+                        <div class="kpi-trend">4.88% delinquency rate</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-label">States Monitored</div>
+                        <div class="kpi-value">10</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-label">Total Delinquent Loans</div>
+                        <div class="kpi-value">3</div>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <h3 class="chart-title">Delinquency Rate by State</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="stateRiskChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3 class="table-title">State Risk Analysis</h3>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>State</th>
+                                <th>Total Loans</th>
+                                <th>Avg Risk Score</th>
+                                <th>Delinquent Count</th>
+                                <th>Delinquency Rate</th>
+                                <th>Risk Level</th>
+                            </tr>
+                        </thead>
+                        <tbody id="stateRiskTable"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- AI CoPilot Tab -->
+            <div id="copilot" class="tab-content">
+                <div class="chat-container">
+                    <div class="chat-header">
+                        <h2 class="chat-title">Altair AI CoPilot - Your Intelligent Risk Assistant</h2>
+                        <p class="chat-subtitle">Ask questions in natural language, get instant insights</p>
+                    </div>
+
+                    <div class="sample-questions">
+                        <div class="sample-questions-title">Try asking:</div>
+                        <div class="questions-grid">
+                            <button class="question-btn" onclick="askQuestion('contractors')">
+                                Which contractors have the highest default rates?
+                            </button>
+                            <button class="question-btn" onclick="askQuestion('earlyDefault')">
+                                Show me loans at risk of early default
+                            </button>
+                            <button class="question-btn" onclick="askQuestion('california')">
+                                What's driving risk in California?
+                            </button>
+                            <button class="question-btn" onclick="askQuestion('underperformance')">
+                                Identify borrowers with production underperformance
+                            </button>
+                            <button class="question-btn" onclick="askQuestion('payments')">
+                                Analyze payment patterns in high-risk segments
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="message">
+                            <div class="message-header">AI CoPilot</div>
+                            <div class="message-content">Hello! I'm your AI Risk Assistant. I can help you analyze your portfolio, identify risk patterns, and provide actionable recommendations. Click any question above or type your own query below.</div>
+                        </div>
+                    </div>
+
+                    <div class="chat-input">
+                        <input type="text" placeholder="Ask CoPilot anything about your portfolio..." id="chatInput" onkeypress="handleChatEnter(event)">
+                        <button onclick="sendMessage()">Send</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
