@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sunlight Financial - Credit Risk Intelligence Platform</title>
+    <title>Altair Graph Studio - Flagstar Bank Knowledge Graph Prototype</title>
+    <script src="https://cdn.jsdelivr.net/npm/vis-network/standalone/umd/vis-network.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -12,846 +13,521 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
             color: #333;
-            min-height: 100vh;
-        }
-
-        .header {
-            background: #1e3a8a;
-            color: white;
-            padding: 1.5rem 2rem;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .header h1 {
-            font-size: 1.75rem;
-            margin-bottom: 0.25rem;
-            font-weight: 600;
-        }
-
-        .header p {
-            font-size: 0.9rem;
-            opacity: 0.9;
-            font-weight: 300;
-        }
-
-        .nav-tabs {
-            background: white;
-            display: flex;
-            gap: 0;
-            padding: 0 2rem;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            overflow-x: auto;
-        }
-
-        .nav-tab {
-            padding: 1rem 1.5rem;
-            cursor: pointer;
-            border: none;
-            background: transparent;
-            font-size: 0.95rem;
-            font-weight: 500;
-            color: #64748b;
-            border-bottom: 3px solid transparent;
-            transition: all 0.2s;
-            white-space: nowrap;
-        }
-
-        .nav-tab:hover {
-            color: #1e40af;
-            background: #f1f5f9;
-        }
-
-        .nav-tab.active {
-            color: #1e40af;
-            border-bottom-color: #1e40af;
-            background: #f8fafc;
         }
 
         .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 2rem;
+            display: flex;
+            height: 100vh;
         }
 
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-            animation: fadeIn 0.3s;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .kpi-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .kpi-card {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        }
-
-        .kpi-label {
-            font-size: 0.85rem;
-            color: #64748b;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-        }
-
-        .kpi-value {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #1e293b;
-            margin-bottom: 0.25rem;
-        }
-
-        .kpi-trend {
-            font-size: 0.85rem;
-            color: #10b981;
-        }
-
-        .kpi-trend.down {
-            color: #ef4444;
-        }
-
-        .card {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        }
-
-        .card-header {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: #1e293b;
-            margin-bottom: 1rem;
-            padding-bottom: 0.75rem;
-            border-bottom: 2px solid #f1f5f9;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1rem;
-        }
-
-        th {
-            background: #f8fafc;
-            padding: 0.75rem;
-            text-align: left;
-            font-weight: 600;
-            color: #475569;
-            font-size: 0.875rem;
-            border-bottom: 2px solid #e2e8f0;
-            cursor: pointer;
-            user-select: none;
-        }
-
-        th:hover {
-            background: #f1f5f9;
-        }
-
-        td {
-            padding: 0.75rem;
-            border-bottom: 1px solid #f1f5f9;
-            font-size: 0.9rem;
-        }
-
-        tr:hover {
-            background: #fafafa;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 0.25rem 0.75rem;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-
-        .badge-success {
-            background: #dcfce7;
-            color: #166534;
-        }
-
-        .badge-warning {
-            background: #fef3c7;
-            color: #92400e;
-        }
-
-        .badge-danger {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-
-        .badge-info {
-            background: #dbeafe;
-            color: #1e40af;
-        }
-
-        .chat-container {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        }
-
-        .chat-messages {
-            max-height: 500px;
+        .sidebar {
+            width: 380px;
+            background: #fff;
+            border-right: 1px solid #e0e0e0;
             overflow-y: auto;
-            margin-bottom: 1rem;
-            padding: 1rem;
-            background: #f8fafc;
+            padding: 20px;
+            box-shadow: 2px 0 8px rgba(0,0,0,0.1);
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2b5f8f 0%, #1a3a52 100%);
+            color: white;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        #network {
+            flex: 1;
+            border: 1px solid #ddd;
+        }
+
+        .sidebar h2 {
+            font-size: 18px;
+            margin: 20px 0 10px 0;
+            color: #2b5f8f;
+            border-bottom: 2px solid #2b5f8f;
+            padding-bottom: 8px;
+        }
+
+        .sidebar h3 {
+            font-size: 14px;
+            margin: 15px 0 8px 0;
+            color: #555;
+        }
+
+        .search-box {
+            margin-bottom: 20px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .query-section {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f9f9f9;
             border-radius: 8px;
+            border-left: 4px solid #2b5f8f;
         }
 
-        .message {
-            margin-bottom: 1.5rem;
-            padding: 1rem;
+        .query-section button {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            background: #2b5f8f;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+
+        .query-section button:hover {
+            background: #1a3a52;
+        }
+
+        .results {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f0f7ff;
             border-radius: 8px;
+            border: 1px solid #b3d9ff;
         }
 
-        .message.user {
-            background: #dbeafe;
-            margin-left: 20%;
+        .results h4 {
+            font-size: 13px;
+            color: #2b5f8f;
+            margin-bottom: 10px;
+            text-transform: uppercase;
         }
 
-        .message.assistant {
-            background: white;
-            margin-right: 20%;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        .result-item {
+            padding: 8px 0;
+            border-bottom: 1px solid #e0e8f0;
+            font-size: 13px;
+            line-height: 1.5;
         }
 
-        .message-label {
-            font-size: 0.75rem;
-            color: #64748b;
-            margin-bottom: 0.5rem;
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            font-size: 13px;
+        }
+
+        .metric-label {
+            font-weight: 500;
+            color: #555;
+        }
+
+        .metric-value {
+            color: #2b5f8f;
             font-weight: 600;
         }
 
-        .sample-questions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.75rem;
-            margin-bottom: 1rem;
-        }
-
-        .sample-btn {
-            padding: 0.75rem 1rem;
-            background: #f1f5f9;
-            border: 1px solid #e2e8f0;
+        .legend {
+            margin-top: 20px;
+            padding: 15px;
+            background: #fff;
             border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: all 0.2s;
-            color: #475569;
+            border: 1px solid #ddd;
         }
 
-        .sample-btn:hover {
-            background: #e2e8f0;
-            border-color: #cbd5e1;
-        }
-
-        .alert-row {
-            border-left: 4px solid #ef4444;
-            background: #fef2f2;
-        }
-
-        .alert-row.medium {
-            border-left-color: #f59e0b;
-            background: #fffbeb;
-        }
-
-        .high-risk-row {
-            background: #fef2f2;
-        }
-
-        .filter-controls {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        select {
-            padding: 0.5rem 1rem;
-            border: 1px solid #e2e8f0;
-            border-radius: 6px;
-            font-size: 0.9rem;
-            background: white;
-            cursor: pointer;
-        }
-
-        .chart-placeholder {
-            background: #f8fafc;
-            height: 300px;
-            border-radius: 8px;
+        .legend-item {
             display: flex;
             align-items: center;
-            justify-content: center;
-            color: #94a3b8;
-            font-size: 0.9rem;
-            border: 2px dashed #e2e8f0;
+            margin: 8px 0;
+            font-size: 13px;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 10px;
+            border: 2px solid rgba(0,0,0,0.2);
+        }
+
+        .info-panel {
+            padding: 15px;
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            border-radius: 6px;
+            font-size: 13px;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        .value-metric {
+            background: #e3f2fd;
+            padding: 10px;
+            border-radius: 6px;
+            margin: 8px 0;
+            font-size: 13px;
+        }
+
+        .value-metric strong {
+            color: #2b5f8f;
+        }
+
+        .recommendation {
+            background: #f3e5f5;
+            padding: 12px;
+            border-left: 4px solid #9c27b0;
+            border-radius: 6px;
+            margin-top: 10px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #999;
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>Sunlight Financial - Credit Risk Intelligence Platform</h1>
-        <p>Powered by Altair Graph Studio &amp; AI CoPilot</p>
-    </div>
-
-    <div class="nav-tabs">
-        <button class="nav-tab active" onclick="showTab('portfolio')">Portfolio Overview</button>
-        <button class="nav-tab" onclick="showTab('contractor')">Contractor Risk</button>
-        <button class="nav-tab" onclick="showTab('warnings')">Early Warning Signals</button>
-        <button class="nav-tab" onclick="showTab('geographic')">Geographic Risk</button>
-        <button class="nav-tab" onclick="showTab('copilot')">AI CoPilot</button>
-    </div>
-
     <div class="container">
-        <!-- Portfolio Overview Tab -->
-        <div id="portfolio" class="tab-content active">
-            <div class="kpi-grid">
-                <div class="kpi-card">
-                    <div class="kpi-label">Total Portfolio Value</div>
-                    <div class="kpi-value">$52.6M</div>
-                    <div class="kpi-trend">↑ 12.4% YTD</div>
-                </div>
-                <div class="kpi-card">
-                    <div class="kpi-label">Active Loans</div>
-                    <div class="kpi-value">1,209</div>
-                    <div class="kpi-trend">↑ 8.2% vs last month</div>
-                </div>
-                <div class="kpi-card">
-                    <div class="kpi-label">Delinquency Rate</div>
-                    <div class="kpi-value">3.87%</div>
-                    <div class="kpi-trend">↓ 0.3% vs last month</div>
-                </div>
-                <div class="kpi-card">
-                    <div class="kpi-label">Average Risk Score</div>
-                    <div class="kpi-value">58.8</div>
-                    <div class="kpi-trend down">Monitor closely</div>
-                </div>
+        <div class="sidebar">
+            <h2>Flagstar Knowledge Graph</h2>
+            <p style="font-size: 13px; color: #666; margin-bottom: 15px;">
+                Interactive prototype showing sponsor-to-loan relationships across integrated systems
+            </p>
+
+            <div class="info-panel">
+                <strong>💡 What You're Seeing:</strong><br>
+                A live knowledge graph connecting sponsors, borrowers, loans, and markets across three data systems (Legacy Flagstar, NYCB Integration, Signature Acquisition). Click a sponsor node to see their complete portfolio instantly.
             </div>
 
-            <div class="card">
-                <div class="card-header">Portfolio Risk Trend (Last 180 Days)</div>
-                <div class="chart-placeholder">
-                    📈 Interactive risk trend chart showing delinquency rates over time
-                </div>
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search sponsor name...">
             </div>
 
-            <div class="card">
-                <div class="card-header">Recent High-Risk Loans</div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Borrower ID</th>
-                            <th>Contractor</th>
-                            <th>Risk Score</th>
-                            <th>Status</th>
-                            <th>Loan Amount</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>B1003</td>
-                            <td>Sunshine Installations</td>
-                            <td>62</td>
-                            <td><span class="badge badge-warning">30 Days Late</span></td>
-                            <td>$35,939</td>
-                        </tr>
-                        <tr>
-                            <td>B1010</td>
-                            <td>Elite Solar Group</td>
-                            <td>58</td>
-                            <td><span class="badge badge-warning">30 Days Late</span></td>
-                            <td>$33,446</td>
-                        </tr>
-                        <tr>
-                            <td>B1006</td>
-                            <td>GreenTech Solar</td>
-                            <td>73</td>
-                            <td><span class="badge badge-success">Current</span></td>
-                            <td>$38,897</td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div class="query-section">
+                <h3>📊 Quick Queries</h3>
+                <button onclick="queryMetropolisCapital()">Metropolis Capital Portfolio</button>
+                <button onclick="queryConcentration()">Top Sponsors by Exposure</button>
+                <button onclick="queryMarketExposure()">NYC Market Concentration</button>
+                <button onclick="queryOfficeRisk()">Office Property Risk</button>
+                <button onclick="queryAllSponsors()">All Sponsors Overview</button>
+            </div>
+
+            <div id="results" class="results" style="display:none;">
+                <h4>📈 Results</h4>
+                <div id="resultsContent"></div>
+            </div>
+
+            <div class="legend">
+                <h3>Legend</h3>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #ff6b6b;"></div>
+                    <span>Sponsor (Entity)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #4ecdc4;"></div>
+                    <span>Borrower (Legal Entity)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #45b7d1;"></div>
+                    <span>Loan</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #ffa500;"></div>
+                    <span>Property/Market</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #95e1d3;"></div>
+                    <span>Risk Factor</span>
+                </div>
             </div>
         </div>
 
-        <!-- Contractor Risk Tab -->
-        <div id="contractor" class="tab-content">
-            <div class="kpi-grid">
-                <div class="kpi-card">
-                    <div class="kpi-label">Total Contractors</div>
-                    <div class="kpi-value">10</div>
-                </div>
-                <div class="kpi-card">
-                    <div class="kpi-label">High-Risk Contractors</div>
-                    <div class="kpi-value">2</div>
-                    <div class="kpi-trend down">Default Rate &gt; 7%</div>
-                </div>
-                <div class="kpi-card">
-                    <div class="kpi-label">Total Contractor Exposure</div>
-                    <div class="kpi-value">$4.5M</div>
-                </div>
+        <div class="main-content">
+            <div class="header">
+                <h1>⚙️ Altair Graph Studio Prototype</h1>
+                <p>Flagstar Bank - Unified Knowledge Graph for Multi-Bank Integration</p>
             </div>
-
-            <div class="card">
-                <div class="card-header">Contractor Risk Analysis</div>
-                <table id="contractorTable">
-                    <thead>
-                        <tr>
-                            <th onclick="sortTable('contractorTable', 0)">Contractor Name</th>
-                            <th onclick="sortTable('contractorTable', 1)">Total Loans</th>
-                            <th onclick="sortTable('contractorTable', 2)">Total Volume</th>
-                            <th onclick="sortTable('contractorTable', 3)">Avg Risk Score</th>
-                            <th onclick="sortTable('contractorTable', 4)">Default Rate %</th>
-                            <th>Risk Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="high-risk-row">
-                            <td><strong>Sunshine Installations</strong></td>
-                            <td>11</td>
-                            <td>$354,106</td>
-                            <td>48.6</td>
-                            <td>9.09%</td>
-                            <td><span class="badge badge-danger">High Risk</span></td>
-                        </tr>
-                        <tr class="high-risk-row">
-                            <td><strong>Elite Solar Group</strong></td>
-                            <td>12</td>
-                            <td>$354,230</td>
-                            <td>45.8</td>
-                            <td>8.33%</td>
-                            <td><span class="badge badge-danger">High Risk</span></td>
-                        </tr>
-                        <tr>
-                            <td>PowerSun Contractors</td>
-                            <td>21</td>
-                            <td>$595,243</td>
-                            <td>45.8</td>
-                            <td>4.76%</td>
-                            <td><span class="badge badge-warning">Medium Risk</span></td>
-                        </tr>
-                        <tr>
-                            <td>Bright Future Energy</td>
-                            <td>21</td>
-                            <td>$628,237</td>
-                            <td>74.2</td>
-                            <td>0.00%</td>
-                            <td><span class="badge badge-success">Low Risk</span></td>
-                        </tr>
-                        <tr>
-                            <td>GreenTech Solar</td>
-                            <td>11</td>
-                            <td>$381,762</td>
-                            <td>77.3</td>
-                            <td>0.00%</td>
-                            <td><span class="badge badge-success">Low Risk</span></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Early Warning Signals Tab -->
-        <div id="warnings" class="tab-content">
-            <div class="kpi-grid">
-                <div class="kpi-card">
-                    <div class="kpi-label">Total Active Warnings</div>
-                    <div class="kpi-value">20</div>
-                </div>
-                <div class="kpi-card">
-                    <div class="kpi-label">High Severity Alerts</div>
-                    <div class="kpi-value">12</div>
-                    <div class="kpi-trend down">Requires immediate review</div>
-                </div>
-                <div class="kpi-card">
-                    <div class="kpi-label">Medium Severity Alerts</div>
-                    <div class="kpi-value">8</div>
-                    <div class="kpi-trend">Monitor closely</div>
-                </div>
-                <div class="kpi-card">
-                    <div class="kpi-label">Potential Loss Exposure</div>
-                    <div class="kpi-value">$1.2M</div>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="card-header">AI-Powered Early Warning Detection System</div>
-                <p style="color: #64748b; margin-bottom: 1rem; font-size: 0.95rem;">Identifying risks before they become losses</p>
-                
-                <div class="filter-controls">
-                    <select id="severityFilter" onchange="filterWarnings()">
-                        <option value="all">All Severities</option>
-                        <option value="High">High Only</option>
-                        <option value="Medium">Medium Only</option>
-                    </select>
-                    <select id="warningTypeFilter" onchange="filterWarnings()">
-                        <option value="all">All Warning Types</option>
-                        <option value="Production Underperformance">Production Underperformance</option>
-                        <option value="Contractor Risk Cluster">Contractor Risk Cluster</option>
-                        <option value="Identity Anomaly">Identity Anomaly</option>
-                    </select>
-                </div>
-
-                <table id="warningsTable">
-                    <thead>
-                        <tr>
-                            <th>Borrower ID</th>
-                            <th>Contractor</th>
-                            <th>Warning Type</th>
-                            <th>Severity</th>
-                            <th>Risk Score</th>
-                            <th>Recommended Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="alert-row">
-                            <td>B1006</td>
-                            <td>GreenTech Solar</td>
-                            <td>Contractor Risk Cluster</td>
-                            <td><span class="badge badge-danger">High</span></td>
-                            <td>73</td>
-                            <td>Immediate Review</td>
-                        </tr>
-                        <tr class="alert-row">
-                            <td>B1013</td>
-                            <td>Bright Future Energy</td>
-                            <td>Contractor Risk Cluster</td>
-                            <td><span class="badge badge-danger">High</span></td>
-                            <td>76</td>
-                            <td>Immediate Review</td>
-                        </tr>
-                        <tr class="alert-row medium">
-                            <td>B1015</td>
-                            <td>Bright Future Energy</td>
-                            <td>Income Inconsistency</td>
-                            <td><span class="badge badge-warning">Medium</span></td>
-                            <td>71</td>
-                            <td>Monitor Closely</td>
-                        </tr>
-                        <tr class="alert-row">
-                            <td>B1019</td>
-                            <td>Bright Future Energy</td>
-                            <td>Production Underperformance</td>
-                            <td><span class="badge badge-danger">High</span></td>
-                            <td>71</td>
-                            <td>Immediate Review</td>
-                        </tr>
-                        <tr class="alert-row medium">
-                            <td>B1026</td>
-                            <td>Bright Future Energy</td>
-                            <td>Identity Anomaly</td>
-                            <td><span class="badge badge-warning">Medium</span></td>
-                            <td>67</td>
-                            <td>Monitor Closely</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Geographic Risk Tab -->
-        <div id="geographic" class="tab-content">
-            <div class="kpi-grid">
-                <div class="kpi-card">
-                    <div class="kpi-label">Highest Risk State</div>
-                    <div class="kpi-value">CA</div>
-                    <div class="kpi-trend down">4.88% delinquency rate</div>
-                </div>
-                <div class="kpi-card">
-                    <div class="kpi-label">States Monitored</div>
-                    <div class="kpi-value">10</div>
-                </div>
-                <div class="kpi-card">
-                    <div class="kpi-label">Geographic Concentration</div>
-                    <div class="kpi-value">27%</div>
-                    <div class="kpi-trend">California exposure</div>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="card-header">Geographic Risk Heatmap</div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>State</th>
-                            <th>Total Loans</th>
-                            <th>Avg Risk Score</th>
-                            <th>Delinquent Count</th>
-                            <th>Delinquency Rate %</th>
-                            <th>Risk Level</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="high-risk-row">
-                            <td><strong>CA</strong></td>
-                            <td>41</td>
-                            <td>53.4</td>
-                            <td>2</td>
-                            <td>4.88%</td>
-                            <td><span class="badge badge-danger">High</span></td>
-                        </tr>
-                        <tr>
-                            <td><strong>AZ</strong></td>
-                            <td>25</td>
-                            <td>51.4</td>
-                            <td>1</td>
-                            <td>4.00%</td>
-                            <td><span class="badge badge-warning">Medium</span></td>
-                        </tr>
-                        <tr>
-                            <td>TX</td>
-                            <td>20</td>
-                            <td>48.4</td>
-                            <td>0</td>
-                            <td>0.00%</td>
-                            <td><span class="badge badge-success">Low</span></td>
-                        </tr>
-                        <tr>
-                            <td>NC</td>
-                            <td>14</td>
-                            <td>53.2</td>
-                            <td>0</td>
-                            <td>0.00%</td>
-                            <td><span class="badge badge-success">Low</span></td>
-                        </tr>
-                        <tr>
-                            <td>FL</td>
-                            <td>11</td>
-                            <td>46.0</td>
-                            <td>0</td>
-                            <td>0.00%</td>
-                            <td><span class="badge badge-success">Low</span></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- AI CoPilot Tab -->
-        <div id="copilot" class="tab-content">
-            <div class="chat-container">
-                <div class="card-header">Altair AI CoPilot - Your Intelligent Risk Assistant</div>
-                <p style="color: #64748b; margin-bottom: 1.5rem; font-size: 0.95rem;">Ask questions in natural language, get instant insights</p>
-                
-                <div class="sample-questions">
-                    <button class="sample-btn" onclick="askQuestion(1)">Which contractors have the highest default rates?</button>
-                    <button class="sample-btn" onclick="askQuestion(2)">Show me loans at risk of early default</button>
-                    <button class="sample-btn" onclick="askQuestion(3)">What's driving risk in California?</button>
-                    <button class="sample-btn" onclick="askQuestion(4)">Identify borrowers with production underperformance</button>
-                </div>
-
-                <div class="chat-messages" id="chatMessages">
-                    <div class="message assistant">
-                        <div class="message-label">AI CoPilot</div>
-                        <p>Hello! I'm your AI Credit Risk Intelligence Assistant. Click any of the sample questions above, or ask me anything about your portfolio risk, contractor performance, or borrower patterns. I can analyze relationships across your entire credit ecosystem and provide actionable recommendations.</p>
-                    </div>
-                </div>
-            </div>
+            <div id="network"></div>
         </div>
     </div>
 
     <script>
-        function showTab(tabId) {
-            // Hide all tabs
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            
-            // Remove active class from all nav buttons
-            document.querySelectorAll('.nav-tab').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            
-            // Show selected tab
-            document.getElementById(tabId).classList.add('active');
-            
-            // Highlight active nav button
-            event.target.classList.add('active');
-        }
+        // Sample data representing Flagstar's portfolio
+        const nodes = new vis.DataSet([
+            // Sponsors
+            { id: 'sponsor_metro', label: 'Metropolis Capital', title: 'Sponsor: Metropolis Capital', color: '#ff6b6b', shape: 'box', font: {size: 14, bold: true}, size: 30 },
+            { id: 'sponsor_smith', label: 'Smith Realty Group', title: 'Sponsor: Smith Realty Group', color: '#ff6b6b', shape: 'box', font: {size: 14, bold: true}, size: 28 },
+            { id: 'sponsor_jones', label: 'Jones Development', title: 'Sponsor: Jones Development', color: '#ff6b6b', shape: 'box', font: {size: 14, bold: true}, size: 26 },
+            { id: 'sponsor_elite', label: 'Elite Real Estate', title: 'Sponsor: Elite Real Estate', color: '#ff6b6b', shape: 'box', font: {size: 12, bold: true}, size: 22 },
 
-        function sortTable(tableId, columnIndex) {
-            const table = document.getElementById(tableId);
-            const tbody = table.querySelector('tbody');
-            const rows = Array.from(tbody.querySelectorAll('tr'));
-            
-            rows.sort((a, b) => {
-                const aValue = a.cells[columnIndex].textContent.trim();
-                const bValue = b.cells[columnIndex].textContent.trim();
-                
-                // Try to parse as number
-                const aNum = parseFloat(aValue.replace(/[^0-9.-]/g, ''));
-                const bNum = parseFloat(bValue.replace(/[^0-9.-]/g, ''));
-                
-                if (!isNaN(aNum) && !isNaN(bNum)) {
-                    return bNum - aNum;
-                }
-                return bValue.localeCompare(aValue);
-            });
-            
-            rows.forEach(row => tbody.appendChild(row));
-        }
+            // Borrowers under Metropolis
+            { id: 'borrow_metro_1', label: 'Metro MF Fund LP', title: 'Borrower: Metropolis MF Fund', color: '#4ecdc4', shape: 'ellipse', size: 20 },
+            { id: 'borrow_metro_2', label: 'Metro Office Partners', title: 'Borrower: Metro Office Partners', color: '#4ecdc4', shape: 'ellipse', size: 20 },
+            { id: 'borrow_metro_3', label: 'Metropolis Specialty', title: 'Borrower: Metropolis Specialty', color: '#4ecdc4', shape: 'ellipse', size: 18 },
 
-        function filterWarnings() {
-            const severityFilter = document.getElementById('severityFilter').value;
-            const typeFilter = document.getElementById('warningTypeFilter').value;
-            const table = document.getElementById('warningsTable');
-            const rows = table.querySelectorAll('tbody tr');
-            
-            rows.forEach(row => {
-                const severity = row.cells[3].textContent.trim();
-                const type = row.cells[2].textContent.trim();
-                
-                const severityMatch = severityFilter === 'all' || severity.includes(severityFilter);
-                const typeMatch = typeFilter === 'all' || type === typeFilter;
-                
-                if (severityMatch && typeMatch) {
-                    row.style.display = '';
+            // Borrowers under Smith
+            { id: 'borrow_smith_1', label: 'Smith MF Holdings', title: 'Borrower: Smith MF Holdings', color: '#4ecdc4', shape: 'ellipse', size: 20 },
+            { id: 'borrow_smith_2', label: 'Smith Commercial', title: 'Borrower: Smith Commercial', color: '#4ecdc4', shape: 'ellipse', size: 18 },
+
+            // Borrowers under Jones
+            { id: 'borrow_jones_1', label: 'Jones Portfolio LLC', title: 'Borrower: Jones Portfolio LLC', color: '#4ecdc4', shape: 'ellipse', size: 18 },
+
+            // Loans under Metropolis
+            { id: 'loan_metro_1', label: 'L-FLG-001\n$25M MF', title: 'Loan L-FLG-001: $25M Multifamily (NYC)', color: '#45b7d1', shape: 'diamond', size: 18, font: {size: 11} },
+            { id: 'loan_metro_2', label: 'L-NYCB-042\n$30M Office', title: 'Loan L-NYCB-042: $30M Office (NYC)', color: '#45b7d1', shape: 'diamond', size: 18, font: {size: 11} },
+            { id: 'loan_metro_3', label: 'L-SIG-108\n$20M Specialty', title: 'Loan L-SIG-108: $20M Specialty (FL)', color: '#45b7d1', shape: 'diamond', size: 18, font: {size: 11} },
+
+            // Loans under Smith
+            { id: 'loan_smith_1', label: 'L-FLG-045\n$28M MF', title: 'Loan L-FLG-045: $28M Multifamily (TX)', color: '#45b7d1', shape: 'diamond', size: 18, font: {size: 11} },
+            { id: 'loan_smith_2', label: 'L-NYCB-087\n$35M MF', title: 'Loan L-NYCB-087: $35M Multifamily (NJ)', color: '#45b7d1', shape: 'diamond', size: 18, font: {size: 11} },
+
+            // Loans under Jones
+            { id: 'loan_jones_1', label: 'L-SIG-156\n$25M Office', title: 'Loan L-SIG-156: $25M Office (DC)', color: '#45b7d1', shape: 'diamond', size: 18, font: {size: 11} },
+
+            // Properties/Markets
+            { id: 'market_nyc', label: 'NYC Metro Market', title: 'Market: NYC Metro (Stressed)', color: '#ffa500', shape: 'star', size: 25, font: {size: 12, color: 'white'} },
+            { id: 'market_fl', label: 'South Florida', title: 'Market: South Florida (Stable)', color: '#ffa500', shape: 'star', size: 20, font: {size: 11, color: 'white'} },
+            { id: 'market_tx', label: 'Dallas/Houston', title: 'Market: Dallas/Houston (Strong)', color: '#ffa500', shape: 'star', size: 20, font: {size: 11, color: 'white'} },
+            { id: 'market_dc', label: 'Washington DC', title: 'Market: Washington DC (Challenged)', color: '#ffa500', shape: 'star', size: 18, font: {size: 10, color: 'white'} },
+
+            // Risk Factors
+            { id: 'risk_office_stress', label: 'Office Market Stress', title: 'Risk: Office CRE Deterioration', color: '#95e1d3', shape: 'triangle', size: 16 },
+            { id: 'risk_vacancy', label: 'Vacancy Rising', title: 'Risk: Occupancy Rates Down', color: '#95e1d3', shape: 'triangle', size: 14 },
+            { id: 'risk_rates', label: 'Rate Environment', title: 'Risk: Higher Rates', color: '#95e1d3', shape: 'triangle', size: 14 },
+
+            // Systems (annotation)
+            { id: 'system_flg', label: 'Legacy Flagstar\nSystem', title: 'Data System: Legacy Flagstar', color: '#e8f4f8', shape: 'box', x: -400, y: -250, fixed: true, font: {size: 11, color: '#666'}, physics: false },
+            { id: 'system_nycb', label: 'NYCB Integration\nSystem', title: 'Data System: NYCB', color: '#e8f4f8', shape: 'box', x: 0, y: -250, fixed: true, font: {size: 11, color: '#666'}, physics: false },
+            { id: 'system_sig', label: 'Signature Acquisition\nSystem', title: 'Data System: Signature', color: '#e8f4f8', shape: 'box', x: 400, y: -250, fixed: true, font: {size: 11, color: '#666'}, physics: false },
+        ]);
+
+        const edges = new vis.DataSet([
+            // Ownership relationships
+            { from: 'sponsor_metro', to: 'borrow_metro_1', label: 'owns', font: {size: 10}, color: {color: '#999'} },
+            { from: 'sponsor_metro', to: 'borrow_metro_2', label: 'owns', font: {size: 10}, color: {color: '#999'} },
+            { from: 'sponsor_metro', to: 'borrow_metro_3', label: 'owns', font: {size: 10}, color: {color: '#999'} },
+            { from: 'sponsor_smith', to: 'borrow_smith_1', label: 'owns', font: {size: 10}, color: {color: '#999'} },
+            { from: 'sponsor_smith', to: 'borrow_smith_2', label: 'owns', font: {size: 10}, color: {color: '#999'} },
+            { from: 'sponsor_jones', to: 'borrow_jones_1', label: 'owns', font: {size: 10}, color: {color: '#999'} },
+
+            // Loan origination
+            { from: 'borrow_metro_1', to: 'loan_metro_1', label: 'originates', font: {size: 9}, color: {color: '#bbb'} },
+            { from: 'borrow_metro_2', to: 'loan_metro_2', label: 'originates', font: {size: 9}, color: {color: '#bbb'} },
+            { from: 'borrow_metro_3', to: 'loan_metro_3', label: 'originates', font: {size: 9}, color: {color: '#bbb'} },
+            { from: 'borrow_smith_1', to: 'loan_smith_1', label: 'originates', font: {size: 9}, color: {color: '#bbb'} },
+            { from: 'borrow_smith_1', to: 'loan_smith_2', label: 'originates', font: {size: 9}, color: {color: '#bbb'} },
+            { from: 'borrow_jones_1', to: 'loan_jones_1', label: 'originates', font: {size: 9}, color: {color: '#bbb'} },
+
+            // Market exposure
+            { from: 'loan_metro_1', to: 'market_nyc', label: 'located_in', font: {size: 9}, color: {color: '#ddd'} },
+            { from: 'loan_metro_2', to: 'market_nyc', label: 'located_in', font: {size: 9}, color: {color: '#ddd'} },
+            { from: 'loan_metro_3', to: 'market_fl', label: 'located_in', font: {size: 9}, color: {color: '#ddd'} },
+            { from: 'loan_smith_1', to: 'market_tx', label: 'located_in', font: {size: 9}, color: {color: '#ddd'} },
+            { from: 'loan_smith_2', to: 'market_nyc', label: 'located_in', font: {size: 9}, color: {color: '#ddd'} },
+            { from: 'loan_jones_1', to: 'market_dc', label: 'located_in', font: {size: 9}, color: {color: '#ddd'} },
+
+            // Risk exposure
+            { from: 'market_nyc', to: 'risk_office_stress', label: 'exposed_to', font: {size: 9}, color: {color: '#ccc'} },
+            { from: 'market_dc', to: 'risk_office_stress', label: 'exposed_to', font: {size: 9}, color: {color: '#ccc'} },
+            { from: 'loan_metro_2', to: 'risk_office_stress', label: 'at_risk_from', font: {size: 9}, color: {color: 'red'} },
+            { from: 'loan_jones_1', to: 'risk_office_stress', label: 'at_risk_from', font: {size: 9}, color: {color: 'red'} },
+        ]);
+
+        const data = { nodes: nodes, edges: edges };
+        const options = {
+            physics: {
+                enabled: true,
+                barnesHut: {
+                    gravitationalConstant: -30000,
+                    centralGravity: 0.3,
+                    springLength: 200
+                },
+                maxVelocity: 50,
+                minVelocity: 0.75,
+                timestep: 0.5,
+                stabilization: { iterations: 200 }
+            },
+            interaction: {
+                hover: true,
+                navigationButtons: true,
+                keyboard: true,
+            },
+            nodes: {
+                font: { size: 16, face: 'Arial' }
+            }
+        };
+
+        const container = document.getElementById('network');
+        const network = new vis.Network(container, data, options);
+
+        // Event listeners
+        network.on('click', function(params) {
+            if (params.nodes.length > 0) {
+                const nodeId = params.nodes[0];
+                highlightNode(nodeId);
+                showNodeDetails(nodeId);
+            }
+        });
+
+        function highlightNode(nodeId) {
+            const allNodes = nodes.get({returnType: 'Object'});
+            for (let nodeId in allNodes) {
+                allNodes[nodeId].hidden = false;
+                allNodes[nodeId].opacity = 0.3;
+            }
+            nodes.update(allNodes);
+
+            const connectedNodes = network.getConnectedNodes(nodeId);
+            const allEdges = edges.get({returnType: 'Object'});
+
+            const nodesToShow = [nodeId, ...connectedNodes];
+
+            for (let node of nodesToShow) {
+                allNodes[node].opacity = 1;
+            }
+
+            for (let edgeId in allEdges) {
+                if (connectedNodes.includes(allEdges[edgeId].from) && connectedNodes.includes(allEdges[edgeId].to)) {
+                    allEdges[edgeId].hidden = false;
+                } else if (allEdges[edgeId].from === nodeId || allEdges[edgeId].to === nodeId) {
+                    allEdges[edgeId].hidden = false;
                 } else {
-                    row.style.display = 'none';
+                    allEdges[edgeId].hidden = true;
                 }
-            });
+            }
+
+            nodes.update(allNodes);
+            edges.update(allEdges);
         }
 
-        function askQuestion(questionNum) {
-            const chatMessages = document.getElementById('chatMessages');
-            
-            const questions = {
-                1: {
-                    question: "Which contractors have the highest default rates?",
-                    answer: `Based on current portfolio analysis, I've identified 2 contractors with elevated risk:
+        function showNodeDetails(nodeId) {
+            const node = nodes.get(nodeId);
+            let html = '<h4>' + node.label + '</h4>';
 
-🔴 <strong>Sunshine Installations</strong>: 9.09% default rate (11 loans, $354K exposure)
-🔴 <strong>Elite Solar Group</strong>: 8.33% default rate (12 loans, $354K exposure)
+            if (nodeId === 'sponsor_metro') {
+                html += '<div class="value-metric"><strong>Portfolio Value:</strong> $190M across 9 loans</div>';
+                html += '<div class="value-metric"><strong>Systems:</strong> Flagstar Core, NYCB, Signature</div>';
+                html += '<div class="value-metric"><strong>Concentration Risk:</strong> NYC 71% (HIGH)</strong>';
+                html += '<div class="recommendation"><strong>⚠️ Risk Alert:</strong> Office exposure represents 34% of total portfolio. NYC office market stress = $65M at risk. Recommend enhanced monitoring.</div>';
+            }
 
-These contractors are performing 2-3x above portfolio average (3.87%). 
-
-<strong>Recommended Actions:</strong>
-1. Suspend new originations pending investigation
-2. Review installation quality and payment patterns across their portfolio
-3. Enhance due diligence requirements for future loans
-4. Consider contractor re-certification and additional monitoring
-
-<strong>Risk Impact:</strong> Combined exposure of $708,336 requires immediate attention to prevent further losses.`
-                },
-                2: {
-                    question: "Show me loans at risk of early default",
-                    answer: `I've identified <strong>20 loans with high early default risk</strong> based on knowledge graph analysis:
-
-<strong>Top Risk Indicators:</strong>
-• Production Underperformance: 6 loans showing 20-40% below expected solar output
-• Contractor Risk Clusters: 8 loans tied to high-risk installers
-• Identity Anomalies: 4 loans with shared devices or address overlaps
-• Payment Delay Patterns: 2 loans with micro-delays not visible in servicing system
-
-<strong>Highest Priority Borrowers:</strong>
-• B1006 (Risk Score 73) - GreenTech Solar, contractor risk cluster
-• B1013 (Risk Score 76) - Bright Future Energy, contractor risk + production issues
-• B1019 (Risk Score 71) - Bright Future Energy, 35% production underperformance
-
-<strong>Potential Loss Exposure:</strong> $1.2M if all high-severity alerts materialize
-
-<strong>Recommended Actions:</strong>
-• Immediate outreach to top 5 highest-risk borrowers
-• Enhanced monitoring for contractor risk clusters
-• Production verification for underperforming systems`
-                },
-                3: {
-                    question: "What's driving risk in California?",
-                    answer: `California shows <strong>4.88% delinquency rate</strong> (highest in portfolio) across 41 loans. Here's the risk breakdown:
-
-<strong>Key Drivers:</strong>
-1. <strong>Contractor Concentration:</strong> 65% of CA loans tied to 2 contractors with elevated risk profiles
-2. <strong>Geographic Clustering:</strong> 8 loans in same zip code with similar production issues
-3. <strong>System Underperformance:</strong> CA installations averaging 15% below expected production
-4. <strong>Economic Factors:</strong> Regional income volatility in specific counties
-
-<strong>Risk Comparison:</strong>
-• CA Delinquency: 4.88%
-• Portfolio Average: 3.87%
-• Next Highest (AZ): 4.00%
-
-<strong>Recommended Actions:</strong>
-1. Adjust pricing for new CA originations (+0.25% rate premium)
-2. Tighten underwriting for contractor-concentration zip codes
-3. Require production verification for CA installations
-4. Enhanced due diligence for loans > $30K in high-risk counties
-
-<strong>Projected Impact:</strong> These actions could reduce CA delinquency to 3.5% within 90 days.`
-                },
-                4: {
-                    question: "Identify borrowers with production underperformance",
-                    answer: `Knowledge graph analysis reveals <strong>6 borrowers with significant solar production underperformance</strong>:
-
-<strong>Critical Cases (>30% below expected):</strong>
-• B1001: Expected 5,826 kWh, Actual 4,642 kWh (-20.3%)
-• B1003: Expected 10,268 kWh, Actual 8,598 kWh (-16.3%)
-• B1005: Expected 5,302 kWh, Actual 4,080 kWh (-23.1%)
-
-<strong>Pattern Analysis:</strong>
-• All 6 cases involve installations by same 2 contractors
-• 4 of 6 are in California (potential shading or installation issues)
-• Average underperformance: 22.4%
-• Correlation with payment delays: 67%
-
-<strong>Root Cause Indicators:</strong>
-• Suboptimal panel placement or shading
-• System maintenance issues
-• Inverter malfunctions
-• Initial production estimates inflated by contractors
-
-<strong>Financial Impact:</strong>
-Production shortfalls reduce borrower savings by average $840/year, increasing default probability by 2.3x
-
-<strong>Recommended Actions:</strong>
-1. Require third-party production audits for these 6 loans
-2. Negotiate contractor remediation for installation defects
-3. Adjust future production estimates for these contractors
-4. Consider loan modification if borrower equity at risk`
-                }
-            };
-
-            const q = questions[questionNum];
-            
-            // Add user question
-            const userMsg = document.createElement('div');
-            userMsg.className = 'message user';
-            userMsg.innerHTML = `<div class="message-label">You</div><p>${q.question}</p>`;
-            chatMessages.appendChild(userMsg);
-            
-            // Add AI response after short delay
-            setTimeout(() => {
-                const aiMsg = document.createElement('div');
-                aiMsg.className = 'message assistant';
-                aiMsg.innerHTML = `<div class="message-label">AI CoPilot</div><p>${q.answer}</p>`;
-                chatMessages.appendChild(aiMsg);
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-            }, 500);
+            document.getElementById('resultsContent').innerHTML = html;
+            document.getElementById('results').style.display = 'block';
         }
+
+        function queryMetropolisCapital() {
+            let html = '<strong>Metropolis Capital Portfolio</strong><br>';
+            html += '<div class="result-item"><strong>Total Exposure:</strong> $190M (9 loans)</div>';
+            html += '<div class="result-item"><strong>Multifamily:</strong> $85M (44%)</div>';
+            html += '<div class="result-item"><strong>Office:</strong> $65M (34%)</div>';
+            html += '<div class="result-item"><strong>Specialty:</strong> $40M (22%)</div>';
+            html += '<div class="result-item"><strong>Geographic:</strong> NYC 71%, FL 21%, Secondary 8%</div>';
+            html += '<div class="recommendation"><strong>System Origins:</strong><br>- $25M from Flagstar Core<br>- $60M from NYCB Integration<br>- $65M from Signature Acquisition<br><br>Before Graph Studio: 5-day manual reconciliation<br>After Graph Studio: 2-minute query</div>';
+
+            document.getElementById('resultsContent').innerHTML = html;
+            document.getElementById('results').style.display = 'block';
+            highlightNode('sponsor_metro');
+        }
+
+        function queryConcentration() {
+            let html = '<strong>Top Sponsors by Portfolio Value</strong><br>';
+            html += '<div class="metric"><span class="metric-label">1. Metropolis Capital</span><span class="metric-value">$190M (45%)</span></div>';
+            html += '<div class="metric"><span class="metric-label">2. Smith Realty Group</span><span class="metric-value">$126M (30%)</span></div>';
+            html += '<div class="metric"><span class="metric-label">3. Jones Development</span><span class="metric-value">$95M (22%)</span></div>';
+            html += '<div class="metric"><span class="metric-label">4. Elite Real Estate</span><span class="metric-value">$28M (7%)</span></div>';
+            html += '<div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #b3d9ff;"><strong>Insight:</strong> Top 3 sponsors = 97% of portfolio. Concentration risk HIGH for acquisitions strategy.</div>';
+
+            document.getElementById('resultsContent').innerHTML = html;
+            document.getElementById('results').style.display = 'block';
+        }
+
+        function queryMarketExposure() {
+            let html = '<strong>NYC Market Concentration</strong><br>';
+            html += '<div class="value-metric"><strong>Total NYC Exposure:</strong> $85M (52% of portfolio)</div>';
+            html += '<div class="metric"><span class="metric-label">Multifamily:</span><span class="metric-value">$55M</span></div>';
+            html += '<div class="metric"><span class="metric-label">Office:</span><span class="metric-value">$30M</span></div>';
+            html += '<div class="recommendation"><strong>Market Stress Factors:</strong><br>- Office occupancy: 78% (declining)<br>- Rent trends: -5% YoY<br>- Contagion risk: $30M office exposure = 35% of NYC loans<br><br>Linked Sponsors: Metropolis Capital, Smith Realty (both exposed)</div>';
+
+            document.getElementById('resultsContent').innerHTML = html;
+            document.getElementById('results').style.display = 'block';
+            highlightNode('market_nyc');
+        }
+
+        function queryOfficeRisk() {
+            let html = '<strong>Office Property Risk Analysis</strong><br>';
+            html += '<div class="value-metric"><strong>Total Office Exposure:</strong> $95M (23% of portfolio)</div>';
+            html += '<div class="metric"><span class="metric-label">Loans at Risk:</span><span class="metric-value">3</span></div>';
+            html += '<div class="metric"><span class="metric-label">Affected Sponsors:</span><span class="metric-value">2 (Metropolis, Jones)</span></div>';
+            html += '<div class="metric"><span class="metric-label">Market Stress Level:</span><span class="metric-value">HIGH</span></div>';
+            html += '<div class="recommendation"><strong>Recommendations:</strong><br>1. Increase monitoring frequency (weekly)<br>2. Prepare loss mitigation strategies<br>3. Consider selective syndication/sales<br>4. De-concentrate office exposure in new originations</div>';
+
+            document.getElementById('resultsContent').innerHTML = html;
+            document.getElementById('results').style.display = 'block';
+        }
+
+        function queryAllSponsors() {
+            let html = '<strong>Portfolio Overview - All Sponsors</strong><br>';
+            html += '<div class="value-metric"><strong>Total Portfolio Value:</strong> $439M (420 loans)</div>';
+            html += '<div class="metric"><span class="metric-label">Number of Sponsors:</span><span class="metric-value">247</span></div>';
+            html += '<div class="metric"><span class="metric-label">Data Systems Integrated:</span><span class="metric-value">3</span></div>';
+            html += '<div class="metric"><span class="metric-label">Markets Covered:</span><span class="metric-value">47</span></div>';
+            html += '<div class="value-metric" style="margin-top: 10px;"><strong>Concentration:</strong><br>Top 10 sponsors = 58% of portfolio<br>Top 25 sponsors = 75% of portfolio</div>';
+
+            document.getElementById('resultsContent').innerHTML = html;
+            document.getElementById('results').style.display = 'block';
+        }
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            if (searchTerm.length > 0) {
+                const allNodes = nodes.get({returnType: 'Object'});
+                for (let nodeId in allNodes) {
+                    if (allNodes[nodeId].label.toLowerCase().includes(searchTerm)) {
+                        highlightNode(nodeId);
+                        showNodeDetails(nodeId);
+                        network.focus(nodeId, {scale: 1.5, animation: true});
+                        break;
+                    }
+                }
+            }
+        });
+
+        // Initial state
+        console.log('Graph Studio Prototype Loaded');
+        console.log('Total Nodes:', nodes.length);
+        console.log('Total Relationships:', edges.length);
     </script>
 </body>
 </html>
-
