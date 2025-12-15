@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Altair GraphStudio Aflac - Interactive Prototype</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css" rel="stylesheet" type="text/css" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #0066cc;
+            --secondary: #ff9900;
+            --dark: #1a1a1a;
+            --light: #f5f5f5;
+            --success: #00aa44;
+            --error: #cc0000;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+            background: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, #003d99 100%);
+            color: white;
+            padding: 20px 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .header h1 { font-size: 28px; margin-bottom: 5px; }
+        .header p { font-size: 14px; opacity: 0.9; }
+        .container {
+            display: grid;
+            grid-template-columns: 300px 1fr 320px;
+            gap: 20px;
+            padding: 20px;
+            height: calc(100vh - 100px);
+        }
+        .panel {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .panel h3 {
+            margin-bottom: 15px;
+            font-size: 16px;
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 10px;
+        }
+        .panel h4 { font-size: 13px; font-weight: 600; margin-top: 15px; margin-bottom: 8px; color: #333; }
+        .button {
+            display: block; width: 100%; padding: 10px; margin: 8px 0;
+            background: var(--primary); color: white; border: none;
+            border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 500;
+            transition: all 0.3s;
+        }
+        .button:hover { background: #0052a3; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,102,204,0.3); }
+        .button.secondary { background: var(--secondary); }
+        .button.secondary:hover { background: #e68a00; }
+        .graph-container { background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); position: relative; overflow: hidden; }
+        #network { width: 100%; height: 100%; border-radius: 8px; }
+        .entity-list { list-style: none; }
+        .entity-item {
+            padding: 10px; margin: 6px 0; background: #f9f9f9;
+            border-left: 4px solid var(--primary); border-radius: 4px;
+            cursor: pointer; transition: all 0.2s; font-size: 13px;
+        }
+        .entity-item:hover { background: #eff6ff; border-left-color: var(--secondary); }
+        .entity-item.active { background: #eff6ff; font-weight: 600; }
+        .entity-badge { display: inline-block; padding: 2px 6px; border-radius: 3px; font-size: 11px; font-weight: 600; margin-right: 6px; }
+        .badge-policy { background: #e3f2fd; color: var(--primary); }
+        .badge-claim { background: #fff3e0; color: var(--secondary); }
+        .badge-broker { background: #e8f5e9; color: var(--success); }
+        .badge-customer { background: #f3e5f5; color: #6a1b9a; }
+        .badge-system { background: #f5f5f5; color: #666; }
+        .info-panel { font-size: 13px; }
+        .info-row { margin: 8px 0; padding: 8px; background: #f9f9f9; border-radius: 4px; }
+        .info-label { font-weight: 600; color: var(--primary); margin-right: 6px; }
+        .metric { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 10px 0; }
+        .metric-box { background: #f0f7ff; padding: 10px; border-radius: 4px; text-align: center; border: 1px solid #cce5ff; }
+        .metric-value { font-size: 20px; font-weight: 700; color: var(--primary); }
+        .metric-label { font-size: 11px; color: #666; margin-top: 4px; }
+        .query-box { background: #f5f5f5; border: 1px solid #ddd; border-radius: 4px; padding: 10px; margin: 10px 0; font-size: 12px; font-family: Monaco, 'Courier New', monospace; color: #333; }
+        .legend { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 15px 0; font-size: 12px; }
+        .legend-item { display: flex; align-items: center; gap: 6px; }
+        .legend-dot { width: 12px; height: 12px; border-radius: 50%; }
+        .status-badge { display: inline-block; padding: 4px 8px; border-radius: 3px; font-size: 11px; font-weight: 600; margin-top: 6px; }
+        .status-active { background: #c8e6c9; color: #1b5e20; }
+        .status-pending { background: #ffe0b2; color: #e65100; }
+        .status-closed { background: #f5f5f5; color: #666; }
+        .divider { height: 1px; background: #e0e0e0; margin: 15px 0; }
+        .source-indicator { display: inline-flex; gap: 4px; font-size: 11px; margin-top: 4px; }
+        .source-tag { background: #f0f0f0; padding: 2px 4px; border-radius: 2px; font-family: monospace; }
+        .cta-section { background: linear-gradient(135deg, #eff6ff 0%, #f0f7ff 100%); border: 2px solid var(--primary); border-radius: 8px; padding: 15px; margin-top: 15px; text-align: center; }
+        .cta-section h4 { color: var(--primary); margin-bottom: 10px; }
+        .cta-section p { font-size: 12px; color: #666; margin-bottom: 10px; }
+        @media (max-width: 1200px) { .container { grid-template-columns: 1fr; } .panel { height: 300px; } }
+        .demo-note { background: #fff3cd; border-left: 4px solid #ffc107; padding: 10px; margin: 15px 0; border-radius: 4px; font-size: 12px; color: #333; }
+        .feature-highlight { background: #e3f2fd; border-left: 4px solid var(--primary); padding: 10px; margin: 8px 0; border-radius: 4px; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Altair GraphStudio • Aflac</h1>
+        <p>Interactive Knowledge Graph Prototype — Unified Data Across Snowflake, Wynsure, Dynamics & Pega</p>
+    </div>
+    <div class="container">
+        <div class="panel">
+            <h3>Entities & Queries</h3>
+            <h4>Quick Select</h4>
+            <button class="button" onclick="selectEntity('policy', 'POL-AFW-2024-001')">View Policy POL-001</button>
+            <button class="button" onclick="selectEntity('claim', 'CLM-2024-5847')">View Claim CLM-5847</button>
+            <button class="button" onclick="selectEntity('broker', 'BROKER-TX-042')">View Broker TX-042</button>
+            <button class="button secondary" onclick="runQuery('cross-system')">Cross-System Journey</button>
+            <button class="button secondary" onclick="runQuery('expense-analysis')">Expense Ratio Drill</button>
+            <button class="button secondary" onclick="runQuery('broker-risk')">Broker Risk Score</button>
+            <div class="divider"></div>
+            <h4>Sample Entities</h4>
+            <ul class="entity-list" id="entityList">
+                <li class="entity-item" onclick="selectEntity('policy', 'POL-AFW-2024-001')"><span class="entity-badge badge-policy">POLICY</span> POL-001</li>
+                <li class="entity-item" onclick="selectEntity('policy', 'POL-AFW-2024-002')"><span class="entity-badge badge-policy">POLICY</span> POL-002</li>
+                <li class="entity-item" onclick="selectEntity('claim', 'CLM-2024-5847')"><span class="entity-badge badge-claim">CLAIM</span> CLM-5847</li>
+                <li class="entity-item" onclick="selectEntity('claim', 'CLM-2024-5891')"><span class="entity-badge badge-claim">CLAIM</span> CLM-5891</li>
+                <li class="entity-item" onclick="selectEntity('broker', 'BROKER-TX-042')"><span class="entity-badge badge-broker">BROKER</span> TX-042</li>
+                <li class="entity-item" onclick="selectEntity('customer', 'CUST-045821')"><span class="entity-badge badge-customer">CUSTOMER</span> CUST-045821</li>
+            </ul>
+            <div class="divider"></div>
+            <div class="demo-note"><strong>Demo Note:</strong> This prototype shows how GraphStudio federates data from multiple Aflac systems into a unified knowledge graph. Click entities to explore relationships.</div>
+            <div class="feature-highlight"><strong>Features:</strong><br>• Snowflake + Wynsure integration<br>• Real-time cross-system queries<br>• Policy-to-Claim lineage<br>• Broker performance scoring<br>• Expense analysis</div>
+        </div>
+        <div class="graph-container">
+            <div id="network"></div>
+        </div>
+        <div class="panel">
+            <h3>Details & Insights</h3>
+            <div id="detailsPanel" class="info-panel">
+                <p style="color: #999; text-align: center; padding: 20px;">Select an entity or query to view details</p>
+            </div>
+            <div class="divider"></div>
+            <h3>Key Metrics</h3>
+            <div class="metric">
+                <div class="metric-box"><div class="metric-value">127</div><div class="metric-label">Active Policies</div></div>
+                <div class="metric-box"><div class="metric-value">23</div><div class="metric-label">Open Claims</div></div>
+            </div>
+            <div class="metric">
+                <div class="metric-box"><div class="metric-value">$2.4M</div><div class="metric-label">Total Premium</div></div>
+                <div class="metric-box"><div class="metric-value">38.9%</div><div class="metric-label">Expense Ratio</div></div>
+            </div>
+            <div class="divider"></div>
+            <h4>System Sources</h4>
+            <div class="legend">
+                <div class="legend-item"><div class="legend-dot" style="background: #0066cc;"></div> Snowflake</div>
+                <div class="legend-item"><div class="legend-dot" style="background: #ff9900;"></div> Wynsure</div>
+                <div class="legend-item"><div class="legend-dot" style="background: #00aa44;"></div> Dynamics</div>
+                <div class="legend-item"><div class="legend-dot" style="background: #cc0000;"></div> Pega</div>
+            </div>
+            <div class="divider"></div>
+            <div class="cta-section">
+                <h4>Ready to Explore?</h4>
+                <p>This is a lightweight prototype. Full GraphStudio includes:</p>
+                <ul style="text-align: left; font-size: 12px; margin: 10px 0;">
+                    <li>Real Snowflake + Wynsure data</li>
+                    <li>Sub-second query performance</li>
+                    <li>Advanced lineage tracking</li>
+                    <li>Semantic governance</li>
+                    <li>BI/AI integration</li>
+                </ul>
+                <p style="margin-top: 10px; font-weight: 600; color: var(--primary);">Schedule a 90-day POC today</p>
+            </div>
+        </div>
+    </div>
+    <script>
+        const nodes = new vis.DataSet([
+            {id: 'POL-001', label: 'POL-AFW-2024-001', title: 'Policy ID: POL-001 | Cancer Group | Active 2024-01-15 | $45,000', group: 'policy', color: '#0066cc', size: 30},
+            {id: 'POL-002', label: 'POL-AFW-2024-002', title: 'Policy ID: POL-002 | Disability | Active 2024-03-01 | $38,500', group: 'policy', color: '#0066cc', size: 28},
+            {id: 'CLM-5847', label: 'CLM-2024-5847', title: 'Claim: CLM-5847 | Cancer Diagnosis | $125,000 | In Review | 2024-11-10', group: 'claim', color: '#ff9900', size: 28},
+            {id: 'CLM-5891', label: 'CLM-2024-5891', title: 'Claim: CLM-5891 | Disability Benefit | $85,000 | Approved | 2024-10-22', group: 'claim', color: '#ff9900', size: 26},
+            {id: 'BROKER-TX-042', label: 'Broker: TX-042\nHarrison Co', title: 'Broker: TX-042 | Harrison Co. | Texas | Policies: 47 | Risk: LOW', group: 'broker', color: '#00aa44', size: 32},
+            {id: 'CUST-045821', label: 'Customer 045821', title: 'Customer ID: 045821 | Acme Corp Group | Employer | Group: 250 (2)', group: 'customer', color: '#6a1b9a', size: 30},
+            {id: 'SNOWFLAKE', label: 'Snowflake\nAnalytical', title: 'Data Warehouse: Snowflake on AWS | Central Analytics Hub | Aggregated policy, claims, loss data', group: 'system', color: '#f0f0f0', size: 20},
+            {id: 'WYNSURE', label: 'Wynsure\nAdmin', title: 'Policy Admin: Wynsure | Operational System of Record | Policy details, coverages, billing', group: 'system', color: '#f0f0f0', size: 20},
+            {id: 'DYNAMICS', label: 'Dynamics\nCRM', title: 'CRM: Microsoft Dynamics | Customer & Sales Hub | Accounts, opportunities, interactions', group: 'system', color: '#f0f0f0', size: 20},
+            {id: 'PEGA', label: 'Pega\nAutomation', title: 'Automation: Pega Platform | Claims & Service Orchestration | Cases, workflows, customer chat', group: 'system', color: '#f0f0f0', size: 20}
+        ]);
+        const edges = new vis.DataSet([
+            {from: 'POL-001', to: 'CLM-5847', label: 'has claim', arrows: 'to', color: '#ccc', width: 2},
+            {from: 'POL-002', to: 'CLM-5891', label: 'has claim', arrows: 'to', color: '#ccc', width: 2},
+            {from: 'POL-001', to: 'CUST-045821', label: 'belongs to', arrows: 'to', color: '#ccc', width: 2},
+            {from: 'POL-002', to: 'CUST-045821', label: 'belongs to', arrows: 'to', color: '#ccc', width: 2},
+            {from: 'POL-001', to: 'BROKER-TX-042', label: 'produced by', arrows: 'to', color: '#ccc', width: 2},
+            {from: 'POL-002', to: 'BROKER-TX-042', label: 'produced by', arrows: 'to', color: '#ccc', width: 2},
+            {from: 'POL-001', to: 'WYNSURE', label: 'administered in', arrows: 'to', color: '#ff9900', width: 1.5, dashes: true},
+            {from: 'POL-001', to: 'SNOWFLAKE', label: 'reported in', arrows: 'to', color: '#0066cc', width: 1.5, dashes: true},
+            {from: 'CLM-5847', to: 'PEGA', label: 'processed via', arrows: 'to', color: '#cc0000', width: 1.5, dashes: true},
+            {from: 'CLM-5847', to: 'SNOWFLAKE', label: 'recorded in', arrows: 'to', color: '#0066cc', width: 1.5, dashes: true},
+            {from: 'CUST-045821', to: 'DYNAMICS', label: 'managed in', arrows: 'to', color: '#00aa44', width: 1.5, dashes: true},
+            {from: 'BROKER-TX-042', to: 'DYNAMICS', label: 'tracked in', arrows: 'to', color: '#00aa44', width: 1.5, dashes: true}
+        ]);
+        const options = {
+            physics: {enabled: true, barnesHut: {gravitationalConstant: -15000, centralGravity: 0.1, springLength: 200}},
+            interaction: {navigationButtons: true, keyboard: true, hover: true},
+            nodes: {shape: 'box', margin: 10, widthConstraint: {maximum: 150}, font: {size: 12, color: '#fff', face: 'Arial'}, shapeProperties: {borderRadius: 6}},
+            edges: {font: {size: 10, align: 'middle'}, smooth: {type: 'continuous'}}
+        };
+        const container = document.getElementById('network');
+        const data = {nodes, edges};
+        const network = new vis.Network(container, data, options);
+        network.on('click', (params) => { if (params.nodes.length > 0) selectEntity(params.nodes[0].split('-')[0].toLowerCase(), params.nodes[0]); });
+        function selectEntity(type, id) {
+            const node = nodes.get(id);
+            if (!node) return;
+            network.selectNodes([id]);
+            let details = `<div class="info-row"><span class="info-label">ID:</span> ${id}</div>`;
+            if (type === 'policy') {
+                details += `<div class="info-row"><span class="info-label">Product:</span> Cancer Group</div>`;
+                details += `<div class="info-row"><span class="info-label">Status:</span> <span class="status-badge status-active">ACTIVE</span></div>`;
+                details += `<div class="info-row"><span class="info-label">Premium:</span> $45,000</div>`;
+                details += `<div class="info-row"><span class="info-label">Administered:</span> Wynsure</div>`;
+                details += `<div class="info-row"><span class="info-label">Related Claims:</span> 1</div>`;
+                details += `<div class="source-indicator"><span class="source-tag">Snowflake</span><span class="source-tag">Wynsure</span></div>`;
+            } else if (type === 'claim') {
+                details += `<div class="info-row"><span class="info-label">Type:</span> Cancer Diagnosis</div>`;
+                details += `<div class="info-row"><span class="info-label">Status:</span> <span class="status-badge status-pending">IN REVIEW</span></div>`;
+                details += `<div class="info-row"><span class="info-label">Amount:</span> $125,000</div>`;
+                details += `<div class="info-row"><span class="info-label">Filed:</span> 2024-11-10</div>`;
+                details += `<div class="source-indicator"><span class="source-tag">Pega</span><span class="source-tag">Snowflake</span></div>`;
+            } else if (type === 'broker') {
+                details += `<div class="info-row"><span class="info-label">Name:</span> Harrison Co.</div>`;
+                details += `<div class="info-row"><span class="info-label">Active Policies:</span> 47</div>`;
+                details += `<div class="info-row"><span class="info-label">Churn Risk:</span> <span style="color: var(--success)">LOW</span></div>`;
+                details += `<div class="info-row"><span class="info-label">Exp. Ratio Trend:</span> Improving</div>`;
+                details += `<div class="source-indicator"><span class="source-tag">Dynamics</span><span class="source-tag">Snowflake</span></div>`;
+            } else if (type === 'customer') {
+                details += `<div class="info-row"><span class="info-label">Name:</span> Acme Corp Group</div>`;
+                details += `<div class="info-row"><span class="info-label">Type:</span> Employer Group</div>`;
+                details += `<div class="info-row"><span class="info-label">Employees:</span> 250</div>`;
+                details += `<div class="info-row"><span class="info-label">Active Policies:</span> 2</div>`;
+                details += `<div class="source-indicator"><span class="source-tag">Dynamics</span><span class="source-tag">Snowflake</span></div>`;
+            }
+            document.getElementById('detailsPanel').innerHTML = details;
+        }
+        function runQuery(queryType) {
+            let queryName, description, results;
+            if (queryType === 'cross-system') {
+                queryName = 'Cross-System Journey: POL-001';
+                description = 'Trace a single policy across all connected systems';
+                results = `<div class="query-box">MATCH (p:Policy {id: 'POL-001'}) RETURN p, p-[:administeredin]->wynsure, p-[:reportedin]->snowflake, p-[:hasclaim]->claims-[:processedvia]->pega</div><div class="info-row"><strong>Results:</strong><br>• Policy record in Wynsure operations<br>• Policy in Snowflake analytics layer<br>• 1 associated claim in Pega automation<br>• Cross-system lineage established</div>`;
+            } else if (queryType === 'expense-analysis') {
+                queryName = 'Expense Ratio Drill By Function';
+                description = 'Decompose expense ratio across operations, claims, marketing';
+                results = `<div class="query-box">MATCH (policies:Policy)-[:hascost]->(costs:CostCenter) WHERE policies.period = 'Q32024' RETURN costs.function, SUM(costs.amount) as totalexpense ORDER BY totalexpense DESC</div><div class="info-row"><strong>Key Findings:</strong><br>• Claims Processing: 15.2% (+2.1pp YoY)<br>• Operations: 12.1% (+0.8pp YoY)<br>• Distribution: 8.9% (flat)<br>• Technology: 2.7% (automation ROI)</div>`;
+            } else if (queryType === 'broker-risk') {
+                queryName = 'Broker Risk Scoring';
+                description = 'Identify brokers at risk of churn based on engagement';
+                results = `<div class="query-box">MATCH (broker:Broker)-[:produces]->(policies:Policy)-[:hasclaim]->(claims:Claim) WITH broker, COUNT(policies) as policycount, AVG(claims.lossratio) as avglossratio WHERE avglossratio > 0.6 OR profile.dayssinceinteraction > 30 as monthsinactive RETURN broker.name, policycount, riskscore ORDER BY riskscore DESC</div><div class="info-row"><strong>At-Risk Brokers (Score > 0.7):</strong><br>• Broker ID-042: Score 0.82 (high loss trend)<br>• Broker ID-018: Score 0.71 (low engagement)<br>• Harrison Co: Score 0.22 (stable)</div>`;
+            }
+            document.getElementById('detailsPanel').innerHTML = `<h4 style="color: var(--primary); margin-bottom: 10px;">${queryName}</h4><p style="font-size: 12px; color: #666; margin-bottom: 10px;">${description}</p>${results}`;
+        }
+        console.log('GraphStudio Prototype Loaded');
+        console.log('Connected systems: Snowflake, Wynsure, Dynamics, Pega');
+    </script>
+</body>
+</html>
